@@ -39,8 +39,9 @@ const transporter = nodemailer.createTransport({
 // ✅ Send Mail API
 app.post('/send-mail', async (req, res) => {
   const { to, subject, message, name, email, phone, company, serviceType } = req.body;
-
+  cosole.log('📧 Sending email:', { to, subject, name, email, phone, company, serviceType });
   try {
+    // Send the email using nodemailer
     await transporter.sendMail({
       from: `"Mailer Service" <${process.env.SMTP_USER}>`,
       to,
@@ -48,7 +49,8 @@ app.post('/send-mail', async (req, res) => {
       text: message,
     });
 
-    // ✅ Log success to DB
+    console.log('✅ Email sent successfully');
+    // Log the successful email to the database
     await EmailLog.create({
       to,
       subject,
@@ -62,11 +64,14 @@ app.post('/send-mail', async (req, res) => {
       response: 'Email sent successfully'
     });
 
+    console.log('✅ Email logged successfully');
+    // Respond to the client with success
     res.json({ success: true, message: 'Email sent & logged successfully' });
   } catch (err) {
+    // Log the error to the console
     console.error('❌ Email Error:', err);
 
-    // ✅ Log failure to DB
+    // Log the failure to the database
     await EmailLog.create({
       to,
       subject,
@@ -79,7 +84,8 @@ app.post('/send-mail', async (req, res) => {
       status: 'fail',
       error: err.message,
     });
-
+    console.error('❌ Email log failed:', err.message);
+    // Respond to the client with error
     res.status(500).json({ success: false, error: 'Email failed to send' });
   }
 });
