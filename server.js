@@ -39,7 +39,7 @@ const transporter = nodemailer.createTransport({
 // ✅ Send Mail API
 app.post('/send-mail', async (req, res) => {
   const { to, subject, message, name, email, phone, company, serviceType } = req.body;
-  cosole.log('📧 Sending email:', { to, subject, name, email, phone, company, serviceType });
+  console.log('📧 Sending email:', { to, subject, name, email, phone, company, serviceType });
   try {
     // Send the email using nodemailer
     await transporter.sendMail({
